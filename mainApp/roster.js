@@ -21,18 +21,20 @@ var {
 
 var Version = require('./version');
 
+// Components
+var GiftedSpinner = require('react-native-gifted-spinner');
 
 var roster = React.createClass({
 
     getInitialState: function(){
         return{
+            version: [],
+            // rosterDates: [],
+            rosterDates: null,
             dataSource: new ListView.DataSource({
               rowHasChanged: (row1, row2) => row1 !== row2,
             }),
-            version: [],
-            rosters: [],
             loaded: false,
-            rosterD: null,
         };
     },
 
@@ -54,7 +56,8 @@ var roster = React.createClass({
         .then((responseData) => {
           console.log(responseData);
           this.setState({
-            rosters: responseData.rostersD
+            dataSource: this.state.dataSource.cloneWithRows(responseData.results),
+            loaded: true,
           })
         })
         .catch(function(err) {
@@ -64,7 +67,13 @@ var roster = React.createClass({
     },
 
     getCurrentRoster:function(){
-        var rosterD = this.state.rosterD;
+
+        if (!this.state.loaded) {
+          return this.renderLoadingView();
+        }
+
+        var rosterDates = this.state.rosterDates;
+        console.log(rosterDates)
 
         return (
           <ListView
@@ -73,53 +82,58 @@ var roster = React.createClass({
         );
     },
 
+    renderLoadingView: function() {
+      return (
+       <View style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+          <GiftedSpinner />
+        </View>
+      );
+    },
+
     render: function() {
         return (
             <View style={styles.flex}>
-                <ScrollView
-                    horizontal={false}
-                    onScroll={() => { console.log('onScroll!'); }}
-                    showsVerticalScrollIndicator={true}
-                >
-                    <View style={styles.container}>
-                        <Text style={styles.activeTitle}>
-                            Barrooster
-                        </Text>
-                        <TouchableHighlight onPress={this._onPressButton}>
-                            <Text style={styles.version}>v0.0.1</Text>
-                        </TouchableHighlight>
-                    </View>
-                    <View>
-                        {this.getCurrentRoster()}
-                    </View>
-                </ScrollView>
+
+            <View style={styles.container}>
+                <Text style={styles.activeTitle}>
+                    Test
+                </Text>
+                <TouchableHighlight onPress={this._onPressButton}>
+                    <Text style={styles.version}>v0.1</Text>
+                </TouchableHighlight>
+            </View>
+
+            <ScrollView
+                horizontal={false}
+                onScroll={() => { console.log('onScroll!'); }}
+                showsVerticalScrollIndicator={false}
+            >
+                <View>
+                    {this.getCurrentRoster()}
+                </View>
+            </ScrollView>
             </View>
         );
     },
 
-    _renderRow: function(rowData){
+    renderRow: function(rosters){
         return (
             <View style={styles.row}>
                 <View style={styles.datum}>
-                    <Text style={styles.dag}>27</Text>
-                    <Text style={styles.maand}>NOV</Text>
+                    <Text style={styles.dag}>{rosters.date.iso.substring('8','10')}</Text>
+                    <Text style={styles.maand}>{rosters.date.iso.substring('5','7')}</Text>
                 </View>
                 <View style={styles.wie}>
-                    <Text style={styles.groep}>{questions.name}</Text>
-                    <Text style={styles.extra}>Extra: Het schoonmaken van de koelkasten in de keuken</Text>
+                    <Text style={styles.groep}>{rosters.barGroup}</Text>
+                    {/*}<Text style={styles.extra}>Extra: Het schoonmaken van de koelkasten in de keuken</Text>*/}
                 </View>
                 {/*<Text>{rowData}</Text>*/}
             </View>
         );
-    },
-
-    _createRow: function(pressData: {[key: number]: boolean}): Array<string>{
-        var dataBlob = [];
-        for (var ii = 0; ii < 11; ii++){
-            var pressedText = pressData[ii] ? '(pressed)' : '';
-            dataBlob.push('Rij ' + ii + pressedText);
-        }
-        return dataBlob;
     },
 
     _onPressButton: function(){
@@ -135,7 +149,7 @@ var styles = StyleSheet.create({
 
   container: {
     padding: 30,
-    flex: 1,
+    flex: 0,
     flexDirection: 'row',
     backgroundColor: '#004079',
   },
