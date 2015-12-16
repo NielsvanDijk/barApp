@@ -143,7 +143,7 @@ var roster = React.createClass({
     },
 });
 
-var smallImage = require('image!beer');
+// var smallImage = require('image!beer');
 
 var styles = StyleSheet.create({
 

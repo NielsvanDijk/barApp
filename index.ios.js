@@ -16,7 +16,7 @@ var {
 
 var Start = require('./mainApp/roster');
 
-var BA = React.createClass({
+var barRooster = React.createClass({
     render: function() {
         return (
             <Navigator
@@ -33,4 +33,4 @@ var BA = React.createClass({
 StatusBarIOS.setHidden(false);
 StatusBarIOS.setStyle('light-content');
 
-AppRegistry.registerComponent('BA', () => BA);
+AppRegistry.registerComponent('barRooster', () => barRooster);
