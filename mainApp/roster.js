@@ -17,19 +17,19 @@ var {
     ScrollView,
     AlertIOS,
     TouchableHighlight,
+    StatusBarIOS
 } = React;
 
 var Version = require('./version');
 
 // Components
 var GiftedSpinner = require('react-native-gifted-spinner');
+var Moment = require('moment');
 
 var roster = React.createClass({
 
     getInitialState: function(){
         return{
-            version: [],
-            // rosterDates: [],
             rosterDates: null,
             dataSource: new ListView.DataSource({
               rowHasChanged: (row1, row2) => row1 !== row2,
@@ -40,21 +40,34 @@ var roster = React.createClass({
 
     componentDidMount: function() {
         this.fetchData();
+        StatusBarIOS.setStyle('default');
     },
 
     fetchData: function() {
 
       var that = this;
 
-      fetch("https://api.parse.com/1/classes/rosterDates", {
-        headers: {
-          "X-Parse-Application-Id": "k0IqFxo8oa2n1FkjFJs6TV7CBJ2BonnC0oSVI6jc",
-          "X-Parse-REST-API-Key": "DHbRDhhAcRncAFgspTgecn6DlecXEmeTIVpIgUk1"
-        }
+      var date = new Date();
+      var stringify = date.toISOString();
+
+      var where = JSON.stringify({
+          "date":{
+              "$gte": {
+                  "__type": "Date",
+                  "iso": stringify
+              }
+          }
+      })
+
+      var url = `https://api.parse.com/1/classes/rosterDates?order=date&where=${where}`
+      fetch(url, {
+            headers: {
+              "X-Parse-Application-Id": "k0IqFxo8oa2n1FkjFJs6TV7CBJ2BonnC0oSVI6jc",
+              "X-Parse-REST-API-Key": "DHbRDhhAcRncAFgspTgecn6DlecXEmeTIVpIgUk1"
+          }
       })
         .then((response) => response.json())
         .then((responseData) => {
-          console.log(responseData);
           this.setState({
             dataSource: this.state.dataSource.cloneWithRows(responseData.results),
             loaded: true,
@@ -73,7 +86,6 @@ var roster = React.createClass({
         }
 
         var rosterDates = this.state.rosterDates;
-        console.log(rosterDates)
 
         return (
           <ListView
@@ -100,19 +112,21 @@ var roster = React.createClass({
 
             <View style={styles.container}>
                 <Text style={styles.activeTitle}>
-                    Test
+                    Barrooster
                 </Text>
-                <TouchableHighlight onPress={this._onPressButton}>
-                    <Text style={styles.version}>v0.1</Text>
-                </TouchableHighlight>
+            </View>
+
+            <View style={styles.welcome}>
+                <Text style={styles.subTitle}>
+                    Welkom, gebruiker
+                </Text>
             </View>
 
             <ScrollView
                 horizontal={false}
-                onScroll={() => { console.log('onScroll!'); }}
                 showsVerticalScrollIndicator={false}
             >
-                <View>
+                <View style={styles.bottom}>
                     {this.getCurrentRoster()}
                 </View>
             </ScrollView>
@@ -123,13 +137,15 @@ var roster = React.createClass({
     renderRow: function(rosters){
         return (
             <View style={styles.row}>
-                <View style={styles.datum}>
-                    <Text style={styles.dag}>{rosters.date.iso.substring('8','10')}</Text>
-                    <Text style={styles.maand}>{rosters.date.iso.substring('5','7')}</Text>
-                </View>
-                <View style={styles.wie}>
-                    <Text style={styles.groep}>{rosters.barGroup}</Text>
-                    {/*}<Text style={styles.extra}>Extra: Het schoonmaken van de koelkasten in de keuken</Text>*/}
+                <View style={styles.inner}>
+                    <View style={styles.datum}>
+                        <Text style={styles.dag}>{Moment(rosters.date.iso).format('DD')}</Text>
+                        <Text style={styles.maand}>{Moment(rosters.date.iso).format('MMM')}</Text>
+                    </View>
+                    <View style={styles.wie}>
+                        <Text style={styles.groep}>{rosters.barGroup}</Text>
+                        <Text style={styles.extra}>Wat: bardienst</Text>
+                    </View>
                 </View>
                 {/*<Text>{rowData}</Text>*/}
             </View>
@@ -143,27 +159,53 @@ var roster = React.createClass({
     },
 });
 
-// var smallImage = require('image!beer');
-
 var styles = StyleSheet.create({
 
   container: {
-    padding: 30,
+    padding: 0,
     flex: 0,
+    height: 70,
     flexDirection: 'row',
-    backgroundColor: '#004079',
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ececec',
+  },
+
+  welcome: {
+    padding: 0,
+    flex: 0,
+    height: 65,
+    flexDirection: 'row',
+    backgroundColor: '#fbfbfb',
   },
 
   flex: {
       flex: 1,
       flexDirection: 'column',
       alignItems: 'stretch',
+      backgroundColor: '#efefef',
   },
 
   activeTitle: {
-    color: 'white',
-    fontSize: 19,
-    fontWeight: 'bold',
+    color: '#000029',
+    fontSize: 18,
+    marginTop: 30,
+    fontWeight: '600',
+    textAlign: 'center',
+    flex: 2,
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+
+  subTitle: {
+    color: '#acacac',
+    fontSize: 16,
+    marginTop: 22,
+    fontWeight: '100',
+    textAlign: 'center',
+    flex: 2,
+    flexDirection: 'column',
+    alignItems: 'center',
   },
 
   v: {
@@ -174,41 +216,65 @@ var styles = StyleSheet.create({
   },
 
   row: {
-    padding: 15,
-    backgroundColor: '#fafafa',
-    borderBottomWidth: 1,
-    borderBottomColor: '#f1f1f1',
+    paddingTop: 15,
+    paddingLeft: 15,
+    paddingRight: 15,
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'stretch',
+  },
+
+  inner: {
+    backgroundColor: '#fff',
+    padding: 15,
+    flex: 1,
+    borderRadius: 5,
     flexDirection: 'row',
     alignItems: 'stretch',
   },
 
   wie:{
       width: 210,
+      marginTop: 7,
   },
 
   datum:{
-      backgroundColor: '#004079',
-      paddingTop: 5,
+      backgroundColor: '#000029',
+      paddingTop: 6,
       paddingRight: 18,
-      paddingBottom: 10,
+      paddingBottom: 7,
+      width: 50,
+      height: 50,
+      borderRadius: 25,
       paddingLeft: 18,
       alignItems: 'center',
       marginRight: 15,
   },
+
   horizontal: {
     flexDirection: 'row',
   },
+
   dag:{
       color: 'white',
-      fontSize: 24,
+      fontSize: 16,
+      textAlign: 'center',
+      width: 26,
+      marginTop: 4,
       fontWeight: 'bold',
   },
 
   maand:{
       color: 'white',
-      fontSize: 14,
-      fontWeight: 'bold',
+      fontSize: 10,
+      textAlign: 'center',
+      width: 26,
+      marginTop: -2,
+      alignItems: "center"
+  },
+
+  bottom:{
+      paddingBottom: 15,
   },
 
   version:{
@@ -224,7 +290,7 @@ var styles = StyleSheet.create({
     },
   groep:{
       fontSize: 18,
-      fontWeight: 'bold',
+      fontWeight: '600',
       color: '#696969'
   },
 
