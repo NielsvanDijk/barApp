@@ -112,7 +112,7 @@ var roster = React.createClass({
 
             <View style={styles.container}>
                 <Text style={styles.activeTitle}>
-                    Barrooster
+                    Barroosters
                 </Text>
             </View>
 

@@ -31,7 +31,6 @@
 		D92A279A1C242420008BB49B /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D92A27991C242420008BB49B /* CoreLocation.framework */; };
 		D92A279C1C242426008BB49B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D92A279B1C242426008BB49B /* QuartzCore.framework */; };
 		D92A279E1C24242C008BB49B /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D92A279D1C24242C008BB49B /* Security.framework */; };
-		D92A27A01C242432008BB49B /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D92A279F1C242432008BB49B /* StoreKit.framework */; };
 		D92A27A21C242439008BB49B /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D92A27A11C242439008BB49B /* SystemConfiguration.framework */; };
 		D92A27A41C242441008BB49B /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D92A27A31C242441008BB49B /* libz.tbd */; };
 		D92A27A61C242449008BB49B /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D92A27A51C242449008BB49B /* libsqlite3.tbd */; };
@@ -155,7 +154,6 @@
 		D92A27991C242420008BB49B /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		D92A279B1C242426008BB49B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		D92A279D1C24242C008BB49B /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		D92A279F1C242432008BB49B /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		D92A27A11C242439008BB49B /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		D92A27A31C242441008BB49B /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		D92A27A51C242449008BB49B /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
@@ -180,7 +178,6 @@
 				D92A27A61C242449008BB49B /* libsqlite3.tbd in Frameworks */,
 				D92A27A41C242441008BB49B /* libz.tbd in Frameworks */,
 				D92A27A21C242439008BB49B /* SystemConfiguration.framework in Frameworks */,
-				D92A27A01C242432008BB49B /* StoreKit.framework in Frameworks */,
 				D92A279E1C24242C008BB49B /* Security.framework in Frameworks */,
 				D92A279C1C242426008BB49B /* QuartzCore.framework in Frameworks */,
 				D92A279A1C242420008BB49B /* CoreLocation.framework in Frameworks */,
@@ -365,7 +362,6 @@
 				D92A27A51C242449008BB49B /* libsqlite3.tbd */,
 				D92A27A31C242441008BB49B /* libz.tbd */,
 				D92A27A11C242439008BB49B /* SystemConfiguration.framework */,
-				D92A279F1C242432008BB49B /* StoreKit.framework */,
 				D92A279D1C24242C008BB49B /* Security.framework */,
 				D92A279B1C242426008BB49B /* QuartzCore.framework */,
 				D92A27991C242420008BB49B /* CoreLocation.framework */,
@@ -442,6 +438,9 @@
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = P49XUTS653;
 						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 0;
+							};
 							com.apple.Push = {
 								enabled = 1;
 							};
@@ -722,7 +721,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Niels van Dijk (Q368PKJLV8)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Niels van Dijk (Q368PKJLV8)";
 				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -735,11 +734,12 @@
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 				);
 				INFOPLIST_FILE = barRooster/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = barRooster;
-				PROVISIONING_PROFILE = "8cd0bccb-faaf-4b90-abff-b354eb6f5f51";
+				PROVISIONING_PROFILE = "46c02520-cf9a-4e1c-b1ab-e0bce0b99330";
 			};
 			name = Debug;
 		};
@@ -747,7 +747,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Niels van Dijk (Q368PKJLV8)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Niels van Dijk (Q368PKJLV8)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -759,11 +759,12 @@
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 				);
 				INFOPLIST_FILE = barRooster/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = barRooster;
-				PROVISIONING_PROFILE = "8cd0bccb-faaf-4b90-abff-b354eb6f5f51";
+				PROVISIONING_PROFILE = "46c02520-cf9a-4e1c-b1ab-e0bce0b99330";
 			};
 			name = Release;
 		};
@@ -784,8 +785,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: nielsvandijkje@gmail.com (QKMCB99SNN)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: nielsvandijkje@gmail.com (QKMCB99SNN)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Niels van Dijk (Q368PKJLV8)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Niels van Dijk (Q368PKJLV8)";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -811,7 +812,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "8cd0bccb-faaf-4b90-abff-b354eb6f5f51";
+				PROVISIONING_PROFILE = "46c02520-cf9a-4e1c-b1ab-e0bce0b99330";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -833,8 +834,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: nielsvandijkje@gmail.com (QKMCB99SNN)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: nielsvandijkje@gmail.com (QKMCB99SNN)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Niels van Dijk (Q368PKJLV8)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Niels van Dijk (Q368PKJLV8)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -853,7 +854,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				ONLY_ACTIVE_ARCH = NO;
-				PROVISIONING_PROFILE = "8cd0bccb-faaf-4b90-abff-b354eb6f5f51";
+				PROVISIONING_PROFILE = "46c02520-cf9a-4e1c-b1ab-e0bce0b99330";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
