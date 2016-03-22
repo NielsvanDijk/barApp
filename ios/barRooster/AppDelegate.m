@@ -21,9 +21,6 @@
 
 {
   
-//  [Parse setApplicationId:@"HBjTL9Xk2fFYFAoK9E3gmDQS3IHsB4RFt8t6LfEX"
-//                clientKey:@"NU6Lx0o2cQvr2ZKxHP0v3csucC6UUsataXy2JfGT"];
-  
   [Parse setApplicationId:@"k0IqFxo8oa2n1FkjFJs6TV7CBJ2BonnC0oSVI6jc"
                 clientKey:@"4ZkVCoDomec46hUG7MCAttA7M3pcgfVENE2fcPbo"];
   
