@@ -13,6 +13,7 @@ var {
     Text,
     Image,
     TextInput,
+    RefreshControl,
     View,
     ScrollView,
     AlertIOS,
@@ -30,23 +31,52 @@ var roster = React.createClass({
 
     getInitialState: function(){
         return{
+            isRefreshing: false,
             rosterDates: null,
             dataSource: new ListView.DataSource({
               rowHasChanged: (row1, row2) => row1 !== row2,
             }),
+            groups: [],
             loaded: false,
         };
     },
 
+    componentWillMount: function(){
+        this.fetchData((err) => {
+            if (err) console.error(err)
+        });
+    },
+
     componentDidMount: function() {
-        this.fetchData();
         StatusBarIOS.setStyle('default');
     },
 
-    fetchData: function() {
+    fetchData: function(cb) {
+        this._getRosterDates((err, rows) => {
+            if (err) return cb(err)
 
-      var that = this;
+            this.setState({
+                dataSource: this.state.dataSource.cloneWithRows(rows),
+            })
 
+            if (this.state.loaded) {
+                return cb()
+            }
+
+            this._getGroups((err, groups) => {
+                if (err) return cb(err)
+
+                this.setState({
+                    groups,
+                    loaded: true,
+                })
+
+                cb()
+            })
+        })
+    },
+
+    _getRosterDates (cb) {
       var date = new Date();
       var stringify = date.toISOString();
 
@@ -68,25 +98,39 @@ var roster = React.createClass({
       })
         .then((response) => response.json())
         .then((responseData) => {
-          this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(responseData.results),
-            loaded: true,
-          })
+          cb(null, responseData.results)
         })
         .catch(function(err) {
-          AlertIOS.alert('Error','kan de data niet vinden')
+          AlertIOS.alert('Error','Kan geen internet connectie maken A')
+          console.log(err)
+          cb(err)
+        })
+        .done()
+    },
+
+    _getGroups (cb) {
+      var url = `https://api.parse.com/1/classes/barGroups`
+      fetch(url, {
+            headers: {
+              "X-Parse-Application-Id": "k0IqFxo8oa2n1FkjFJs6TV7CBJ2BonnC0oSVI6jc",
+              "X-Parse-REST-API-Key": "DHbRDhhAcRncAFgspTgecn6DlecXEmeTIVpIgUk1"
+          }
+      })
+        .then((response) => response.json())
+        .then((responseData) => {
+          cb(null, responseData.results)
+        })
+        .catch(function(err) {
+          AlertIOS.alert('Error','Kan geen internet connectie maken B')
+          cb(err)
         })
         .done()
     },
 
     getCurrentRoster:function(){
-
         if (!this.state.loaded) {
           return this.renderLoadingView();
         }
-
-        var rosterDates = this.state.rosterDates;
-
         return (
           <ListView
             dataSource={this.state.dataSource}
@@ -123,8 +167,19 @@ var roster = React.createClass({
             </View>
 
             <ScrollView
-                horizontal={false}
+                style={styles.scrollview}
                 showsVerticalScrollIndicator={false}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={this.state.isRefreshing}
+                    onRefresh={this._onRefresh}
+                    tintColor="#247a91"
+                    title="Nieuwe roosters ophalen..."
+                    colors={['#247a91', '#00ff00', '#0000ff']}
+                    progressBackgroundColor="#ffff00"
+                  />
+              }
+
             >
                 <View style={styles.bottom}>
                     {this.getCurrentRoster()}
@@ -134,7 +189,7 @@ var roster = React.createClass({
         );
     },
 
-    renderRow: function(rosters){
+    renderRow (rosters) {
         return (
             <View style={styles.row}>
                 <View style={styles.inner}>
@@ -143,13 +198,23 @@ var roster = React.createClass({
                         <Text style={styles.maand}>{Moment(rosters.date.iso).format('MMM')}</Text>
                     </View>
                     <View style={styles.wie}>
-                        <Text style={styles.groep}>{rosters.barGroup}</Text>
+                        <Text style={styles.groep}>{this._getGroupById(rosters.barGroup).name}</Text>
                         <Text style={styles.extra}>Wat: bardienst</Text>
                     </View>
                 </View>
-                {/*<Text>{rowData}</Text>*/}
             </View>
         );
+    },
+    _getGroupById (id) {
+        return this.state.groups.find((group) => group.barMemberId == id)
+    },
+
+    _onRefresh() {
+        this.setState({ isRefreshing: true });
+
+        this.fetchData(() => {
+            this.setState({ isRefreshing: false })
+        })
     },
 
     _onPressButton: function(){
@@ -169,6 +234,22 @@ var styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#ececec',
+  },
+
+  row: {
+    borderColor: 'grey',
+    borderWidth: 1,
+    padding: 20,
+    backgroundColor: '#3a5795',
+    margin: 5,
+  },
+  text: {
+    alignSelf: 'center',
+    color: '#fff',
+  },
+
+  scrollview: {
+    flex: 1,
   },
 
   welcome: {
